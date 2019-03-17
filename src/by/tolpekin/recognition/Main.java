@@ -20,7 +20,6 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest((event -> controller.setClosed()));
     }
 
-
     public static void main(String[] args) {
         System.out.println("start");
         nu.pattern.OpenCV.loadLocally();
