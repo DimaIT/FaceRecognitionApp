@@ -1,10 +1,16 @@
 package by.tolpekin.recognition;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javafx.scene.control.RadioButton;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
 import javafx.event.ActionEvent;
@@ -13,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import static by.tolpekin.recognition.Utils.resizeTwiceSmaller;
 import static org.opencv.videoio.Videoio.CAP_PROP_FPS;
 
 public class IndexController {
@@ -27,6 +34,16 @@ public class IndexController {
 
     @FXML
     private ImageView grayFxFrame;
+
+    @FXML
+    private ImageView redFxFrame;
+
+    @FXML
+    private RadioButton radioRed;
+    @FXML
+    private RadioButton radioBlue;
+    @FXML
+    private RadioButton radioGreen;
 
     private DetectionService detectionService;
 
@@ -87,19 +104,36 @@ public class IndexController {
         try {
             this.capture.read(frame);
 
-            Mat grayFrame = detectionService.destratureAndEqualize(frame);
-            Image grayImageToShow = Utils.mat2Image(grayFrame);
+            Mat redFrame = getThirdFrame(frame);
+            detectionService.detectAndDisplay(redFrame);
+            Image redImageToShow = Utils.mat2Image(resizeTwiceSmaller(redFrame));
+            updateImageView(redFxFrame, redImageToShow);
 
+            Mat grayFrame = detectionService.destratureAndEqualize(frame);
+            detectionService.detectAndDisplay(grayFrame);
+            Image grayImageToShow = Utils.mat2Image(resizeTwiceSmaller(grayFrame));
             updateImageView(grayFxFrame, grayImageToShow);
 
-            if (!frame.empty()) {
-                detectionService.detectAndDisplay(grayFrame);
-            }
+            detectionService.detectAndDisplay(frame);
+
         } catch (Exception e) {
             System.err.println("Error during the image elaboration: " + e);
         }
 
         return frame;
+    }
+
+    private Mat getThirdFrame(Mat frame) {
+        List<Mat> images = new ArrayList<>();
+        Core.split(frame, images);
+
+        if (radioRed.isSelected()) {
+            return images.get(2);
+        } else if (radioGreen.isSelected()) {
+            return images.get(1);
+        } else {
+            return images.get(0);
+        }
     }
 
     private void stopStreaming() {

@@ -9,6 +9,8 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 public final class Utils {
 
@@ -19,6 +21,12 @@ public final class Utils {
             System.err.println("Cannot convert the Mat object: " + e);
             return null;
         }
+    }
+
+    public static Mat resizeTwiceSmaller(Mat frame) {
+        Mat frameSmall = new Mat();
+        Imgproc.resize(frame, frameSmall, new Size(frame.width() >> 1, frame.height() >> 1));
+        return frameSmall;
     }
 
     public static <T> void onFXThread(final ObjectProperty<T> property, final T value) {

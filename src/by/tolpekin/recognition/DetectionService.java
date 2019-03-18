@@ -11,7 +11,6 @@ import org.opencv.objdetect.Objdetect;
 
 public class DetectionService {
     private CascadeClassifier faceCascade = new CascadeClassifier();
-    private int absoluteFaceSize = 0;
 
     public DetectionService() {
         this.load("src/resources/lbpcascades/lbpcascade_frontalface.xml");
@@ -33,16 +32,12 @@ public class DetectionService {
         MatOfRect faces = new MatOfRect();
 
         // compute minimum face size (20% of the frame height, in our case)
-        if (this.absoluteFaceSize == 0) {
-            int height = frame.rows();
-            if (Math.round(height * 0.2f) > 0) {
-                this.absoluteFaceSize = Math.round(height * 0.2f);
-            }
-        }
+        int height = frame.rows();
+        int faceHeight = Math.round(height * 0.2f);
 
         // detect faces
         this.faceCascade.detectMultiScale(frame, faces, 1.1, 2, Objdetect.CASCADE_SCALE_IMAGE,
-                new Size(this.absoluteFaceSize, this.absoluteFaceSize), new Size());
+                new Size(faceHeight, faceHeight), new Size());
 
         // each rectangle in faces is a face: draw them!
         Rect[] facesArray = faces.toArray();

@@ -6,19 +6,29 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="by.tolpekin.recognition.IndexController">
-    <center>
-        <BorderPane>
-            <top>
-                <ImageView fx:id="mainFrame"/>
-            </top>
-            <bottom>
-                <ImageView fx:id="grayFxFrame"/>
-            </bottom>
 
-        </BorderPane>
-    </center>
+    <GridPane>
+        <ImageView fx:id="mainFrame" GridPane.rowIndex="0" GridPane.columnSpan="2" />
+        <GridPane GridPane.rowIndex="0" GridPane.columnIndex="3" minWidth="200">
+            <fx:define>
+                <ToggleGroup fx:id="gr1"/>
+            </fx:define>
+            <padding>
+                <Insets bottom="25" left="25" right="25" top="25"/>
+            </padding>
+            <RadioButton toggleGroup="$gr1" text="red" fx:id="radioRed" selected="true" GridPane.rowIndex="1" />
+            <RadioButton toggleGroup="$gr1" text="blue" fx:id="radioBlue" GridPane.rowIndex="2" />
+            <RadioButton toggleGroup="$gr1" text="green" fx:id="radioGreen" GridPane.rowIndex="3" />
+        </GridPane>
+        <ImageView fx:id="grayFxFrame" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <ImageView fx:id="redFxFrame" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+    </GridPane>
+
     <bottom>
         <HBox alignment="center">
             <padding>
