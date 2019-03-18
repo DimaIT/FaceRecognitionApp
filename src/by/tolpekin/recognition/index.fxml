@@ -6,16 +6,25 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.tolpekin.recognition.IndexController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="by.tolpekin.recognition.IndexController">
+    <center>
+        <BorderPane>
+            <top>
+                <ImageView fx:id="mainFrame"/>
+            </top>
+            <bottom>
+                <ImageView fx:id="grayFxFrame"/>
+            </bottom>
+
+        </BorderPane>
+    </center>
     <bottom>
         <HBox alignment="center">
             <padding>
-                <Insets bottom="25" left="25" right="25" top="25" />
+                <Insets bottom="25" left="25" right="25" top="25"/>
             </padding>
-            <Button fx:id="button" alignment="center" onAction="#toggleCamera" text="Start Camera" />
+            <Button fx:id="button" alignment="center" onAction="#toggleCamera" text="Start Camera"/>
         </HBox>
     </bottom>
-    <center>
-        <ImageView fx:id="currentFrame" />
-    </center>
 </BorderPane>

@@ -5,7 +5,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
 import javafx.event.ActionEvent;
@@ -24,12 +23,21 @@ public class IndexController {
     private Button button;
 
     @FXML
-    private ImageView currentFrame;
+    private ImageView mainFrame;
+
+    @FXML
+    private ImageView grayFxFrame;
+
+    private DetectionService detectionService;
 
 
     private ScheduledExecutorService timer;
     private VideoCapture capture = new VideoCapture();
     private boolean cameraActive = false;
+
+    public void init() {
+        detectionService = new DetectionService();
+    }
 
     @FXML
     protected void toggleCamera(ActionEvent event) {
@@ -52,7 +60,7 @@ public class IndexController {
             Runnable frameGrabber = () -> {
                 Mat frame = grabFrame();
                 Image imageToShow = Utils.mat2Image(frame);
-                updateImageView(currentFrame, imageToShow);
+                updateImageView(mainFrame, imageToShow);
             };
 
             this.timer = Executors.newSingleThreadScheduledExecutor();
@@ -78,6 +86,15 @@ public class IndexController {
 
         try {
             this.capture.read(frame);
+
+            Mat grayFrame = detectionService.destratureAndEqualize(frame);
+            Image grayImageToShow = Utils.mat2Image(grayFrame);
+
+            updateImageView(grayFxFrame, grayImageToShow);
+
+            if (!frame.empty()) {
+                detectionService.detectAndDisplay(grayFrame);
+            }
         } catch (Exception e) {
             System.err.println("Error during the image elaboration: " + e);
         }

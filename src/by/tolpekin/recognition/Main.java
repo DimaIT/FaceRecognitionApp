@@ -12,11 +12,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("index.fxml"));
         Parent root = loader.load();
-        primaryStage.setScene(new Scene(root, 1200, 900));
+        primaryStage.setScene(new Scene(root, 1200, 1050));
         primaryStage.setTitle("OpenCV face tracking");
         primaryStage.show();
 
         IndexController controller = loader.getController();
+        controller.init();
         primaryStage.setOnCloseRequest((event -> controller.setClosed()));
     }
 
