@@ -12,11 +12,13 @@ import org.opencv.objdetect.Objdetect;
 public class DetectionService {
     private CascadeClassifier faceCascade = new CascadeClassifier();
     private CascadeClassifier eyesCascade = new CascadeClassifier();
+    private long counter = 0;
 
     public DetectionService() {
         this.faceCascade.load("src/resources/lbpcascades/lbpcascade_frontalface.xml");
 //        this.eyesCascade.load("src/resources/haarcascades/haarcascade_eye_tree_eyeglasses.xml");
         this.eyesCascade.load("src/resources/haarcascades/haarcascade_eye.xml");
+//        this.eyesCascade.load("src/resources/haarcascades/haarcascade_frontalface_default.xml");
     }
 
     public Mat destratureAndEqualize(Mat frame) {
@@ -31,8 +33,22 @@ public class DetectionService {
     }
 
     public void detectAndDisplay(Mat frame) {
+        long startTime = System.currentTimeMillis();
         detectAndDisplayFace(frame);
+        printTime(startTime, "First:");
+
+        startTime = System.currentTimeMillis();
         detectAndDisplayEyes(frame);
+        printTime(startTime, "Second:");
+        counter++;
+    }
+
+    private void printTime(long start, String key) {
+        if (counter % 50 == 0) {
+            long stopTime = System.currentTimeMillis();
+            long elapsedTime = stopTime - start;
+            System.out.println(key + " " + elapsedTime);
+        }
     }
 
     public void detectAndDisplayFace(Mat frame) {
