@@ -11,9 +11,12 @@ import org.opencv.objdetect.Objdetect;
 
 public class DetectionService {
     private CascadeClassifier faceCascade = new CascadeClassifier();
+    private CascadeClassifier eyesCascade = new CascadeClassifier();
 
     public DetectionService() {
-        this.load("src/resources/lbpcascades/lbpcascade_frontalface.xml");
+        this.faceCascade.load("src/resources/lbpcascades/lbpcascade_frontalface.xml");
+//        this.eyesCascade.load("src/resources/haarcascades/haarcascade_eye_tree_eyeglasses.xml");
+        this.eyesCascade.load("src/resources/haarcascades/haarcascade_eye.xml");
     }
 
     public Mat destratureAndEqualize(Mat frame) {
@@ -27,8 +30,12 @@ public class DetectionService {
         return grayFrame;
     }
 
-
     public void detectAndDisplay(Mat frame) {
+        detectAndDisplayFace(frame);
+        detectAndDisplayEyes(frame);
+    }
+
+    public void detectAndDisplayFace(Mat frame) {
         MatOfRect faces = new MatOfRect();
 
         // compute minimum face size (20% of the frame height, in our case)
@@ -43,6 +50,21 @@ public class DetectionService {
         Rect[] facesArray = faces.toArray();
         for (int i = 0; i < facesArray.length; i++)
             Imgproc.rectangle(frame, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0), 3);
+    }
+
+    public void detectAndDisplayEyes(Mat frame) {
+        MatOfRect eyes = new MatOfRect();
+
+        // compute minimum face size (20% of the frame height, in our case)
+        int height = frame.rows();
+        int minHeight = Math.round(height * 0.15f);
+
+        // detect faces
+        this.eyesCascade.detectMultiScale(frame, eyes, 1.1, 2, Objdetect.CASCADE_SCALE_IMAGE,
+                new Size(minHeight, minHeight), new Size());
+
+        eyes.toList().forEach(eyeRect ->
+                Imgproc.rectangle(frame, eyeRect.tl(), eyeRect.br(), new Scalar(0, 0, 100), 3));
 
     }
 
